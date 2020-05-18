@@ -1,7 +1,5 @@
-import { WebPlugin } from '@capacitor/core';
-import { DownloadManagerPlugin, DownloadRequest } from './definitions';
-export declare class DownloadManagerPluginWeb extends WebPlugin implements DownloadManagerPlugin {
-    constructor();
+import { IDownloadManagerPlugin, DownloadRequest } from './definitions';
+export declare class DownloadManagerPlugin implements IDownloadManagerPlugin {
     echo(options: {
         value: string;
     }): Promise<{
@@ -9,5 +7,3 @@ export declare class DownloadManagerPluginWeb extends WebPlugin implements Downl
     }>;
     enqueue(request: DownloadRequest): Promise<any>;
 }
-declare const DownloadManagerPlugin: DownloadManagerPluginWeb;
-export { DownloadManagerPlugin };

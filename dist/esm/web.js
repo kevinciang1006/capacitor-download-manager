@@ -7,14 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { WebPlugin } from '@capacitor/core';
-export class DownloadManagerPluginWeb extends WebPlugin {
-    constructor() {
-        super({
-            name: 'DownloadManagerPlugin',
-            platforms: ['web']
-        });
-    }
+import { Plugins } from '@capacitor/core';
+const { DownloadManager } = Plugins;
+export class DownloadManagerPlugin {
+    // constructor() {
+    //   super({
+    //     name: 'DownloadManagerPlugin',
+    //     platforms: ['web']
+    //   });
+    // }
     echo(options) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('ECHO', options);
@@ -24,12 +25,12 @@ export class DownloadManagerPluginWeb extends WebPlugin {
     enqueue(request) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('enqueue plugin: ', JSON.stringify(request));
-            return DownloadManagerPlugin.enqueue(request);
+            return DownloadManager.enqueue(request);
         });
     }
 }
-const DownloadManagerPlugin = new DownloadManagerPluginWeb();
-export { DownloadManagerPlugin };
-import { registerWebPlugin } from '@capacitor/core';
-registerWebPlugin(DownloadManagerPlugin);
+// const DownloadManagerPlugin = new DownloadManagerPluginWeb();
+// export { DownloadManagerPlugin };
+// import { registerWebPlugin } from '@capacitor/core';
+// registerWebPlugin(DownloadManagerPlugin);
 //# sourceMappingURL=web.js.map

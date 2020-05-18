@@ -1,9 +1,9 @@
 declare module "@capacitor/core" {
     interface PluginRegistry {
-        DownloadManagerPlugin: DownloadManagerPlugin;
+        DownloadManagerPlugin: IDownloadManagerPlugin;
     }
 }
-export interface DownloadManagerPlugin {
+export interface IDownloadManagerPlugin {
     echo(options: {
         value: string;
     }): Promise<{
