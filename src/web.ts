@@ -1,13 +1,14 @@
-import { WebPlugin } from '@capacitor/core';
-import { DownloadManagerPlugin, DownloadRequest } from './definitions';
+import { Plugins } from '@capacitor/core';
+import { IDownloadManagerPlugin, DownloadRequest } from './definitions';
+const { DownloadManager } = Plugins;
 
-export class DownloadManagerPluginWeb extends WebPlugin implements DownloadManagerPlugin {
-  constructor() {
-    super({
-      name: 'DownloadManagerPlugin',
-      platforms: ['web']
-    });
-  }
+export class DownloadManagerPlugin implements IDownloadManagerPlugin {
+  // constructor() {
+  //   super({
+  //     name: 'DownloadManagerPlugin',
+  //     platforms: ['web']
+  //   });
+  // }
 
   async echo(options: { value: string }): Promise<{value: string}> {
     console.log('ECHO', options);
@@ -16,13 +17,13 @@ export class DownloadManagerPluginWeb extends WebPlugin implements DownloadManag
 
   async enqueue(request: DownloadRequest): Promise<any> {
     console.log('enqueue plugin: ', JSON.stringify(request));
-    return DownloadManagerPlugin.enqueue(request);
+    return DownloadManager.enqueue(request);
   }
 }
 
-const DownloadManagerPlugin = new DownloadManagerPluginWeb();
+// const DownloadManagerPlugin = new DownloadManagerPluginWeb();
 
-export { DownloadManagerPlugin };
+// export { DownloadManagerPlugin };
 
-import { registerWebPlugin } from '@capacitor/core';
-registerWebPlugin(DownloadManagerPlugin);
+// import { registerWebPlugin } from '@capacitor/core';
+// registerWebPlugin(DownloadManagerPlugin);
