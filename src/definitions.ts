@@ -1,4 +1,4 @@
-declare global {
+declare module "@capacitor/core" {
   interface PluginRegistry {
     DownloadManagerPlugin: IDownloadManagerPlugin;
   }
@@ -6,7 +6,7 @@ declare global {
 
 export interface IDownloadManagerPlugin {
   echo(options: { value: string }): Promise<{value: string}>;
-  enqueue(request: DownloadRequest): Promise<string>;
+  enqueue(request: DownloadRequest): Promise<any>;
 }
 
 export enum NotificationVisibility {
