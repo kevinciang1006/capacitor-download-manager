@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { WebPlugin } from '@capacitor/core';
+// declare var DM: Download
 export class DownloadManagerPluginWeb extends WebPlugin {
     constructor() {
         super({
@@ -17,14 +18,15 @@ export class DownloadManagerPluginWeb extends WebPlugin {
     }
     echo(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('ECHO', options);
+            console.log('ECHO', JSON.stringify(options));
             return options;
         });
     }
     enqueue(request) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('enqueue plugin: ', JSON.stringify(request));
-            return request;
+            // return request;
+            return new Promise(() => { });
             // return DownloadManagerPlugin.enqueue(request);
             // return new Promise((resolve, reject) => {
             //   DownloadManagerPlugin.enqueue(request).then
