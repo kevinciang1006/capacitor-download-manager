@@ -31,7 +31,7 @@ public class DownloadManagerPlugin extends Plugin {
     DownloadManager downloadManager;
     BroadcastReceiver receiver;
 
-    long downloadId = 0;
+//    long downloadId = 0;
 
     @PluginMethod()
     public void echo(PluginCall call) {
@@ -53,7 +53,7 @@ public class DownloadManagerPlugin extends Plugin {
         req.setVisibleInDownloadsUi(call.getBoolean("visibleInDownloadsUi", true));
         req.setNotificationVisibility(call.getInt("notificationVisibility"));
 
-        if (call.getObject("destinationInExternalFilesDir", null) != null) {
+        if (call.getData().has("destinationInExternalFilesDir")) {
             Context context = bridge.getActivity()
                     .getApplication()
                     .getApplicationContext();
@@ -61,15 +61,15 @@ public class DownloadManagerPlugin extends Plugin {
             JSObject params = call.getObject("destinationInExternalFilesDir");
             req.setDestinationInExternalFilesDir(context, params.getString("dirType"), params.getString("subPath"));
         }
-        else if (call.getObject("destinationInExternalPublicDir", null) != null) {
-            JSObject params = call.getObject("destinationInExternalPublicDir");
-            req.setDestinationInExternalPublicDir(params.getString("dirType"), params.getString("subPath"));
-        }
-        else if (call.getString("destinationUri", null) != null) {
+//        else if (call.getData().has("destinationInExternalPublicDir")) {
+//            JSObject params = call.getObject("destinationInExternalPublicDir");
+//            req.setDestinationInExternalPublicDir(params.getString("dirType"), params.getString("subPath"));
+//        }
+        else if (call.getData().has("destinationUri")) {
             req.setDestinationUri(Uri.parse(call.getString("destinationUri")));
         }
 
-        if (call.getArray("headers", null) != null) {
+        if (call.getData().has("headers")) {
             JSArray arrHeaders = call.getArray("headers", new JSArray());
             for (int i = 0; i < arrHeaders.length(); i++) {
                 JSObject headerObj = null;

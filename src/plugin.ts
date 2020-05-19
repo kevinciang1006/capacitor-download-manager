@@ -1,7 +1,7 @@
 import { Plugins } from '@capacitor/core';
 import { IDownloadManagerPlugin, DownloadRequest } from './definitions';
 const { DownloadManagerPlugin } = Plugins;
-export class DownloadManager2 implements IDownloadManagerPlugin {
+export class DownloadManager implements IDownloadManagerPlugin {
   echo(options: { value: string }): Promise<{value: string}> {
     return DownloadManagerPlugin.echo();
   }
