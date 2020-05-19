@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="80ee04b2-3ffa-4478-9cd4-9b11f261268f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kevinciang/DownloadManagerPlugin/DownloadManagerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kevinciang/DownloadManagerPlugin/DownloadManagerPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/plugin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/plugin.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -75,6 +71,14 @@
       <option name="presentableId" value="Default" />
       <updated>1589514031272</updated>
     </task>
+    <task id="LOCAL-00001" summary="Fix invoke virtual method">
+      <created>1589857046796</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1589857046796</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -89,5 +93,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fix invoke virtual method" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix invoke virtual method" />
   </component>
 </project>

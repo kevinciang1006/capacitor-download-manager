@@ -7,6 +7,7 @@ declare module "@capacitor/core" {
 export interface IDownloadManagerPlugin {
   echo(options: { value: string }): Promise<{value: string}>;
   enqueue(request: DownloadRequest): Promise<any>;
+  query(ids: string[]): Promise<any>;
 }
 
 export enum NotificationVisibility {

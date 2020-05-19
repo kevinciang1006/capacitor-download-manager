@@ -18,12 +18,11 @@ export class DownloadManagerPluginWeb extends WebPlugin implements IDownloadMana
 
   async enqueue(request: DownloadRequest): Promise<any> {
     console.log('enqueue plugin: ', JSON.stringify(request));
-    // return request;
-    return new Promise(() => {});
-    // return DownloadManagerPlugin.enqueue(request);
-    // return new Promise((resolve, reject) => {
-    //   DownloadManagerPlugin.enqueue(request).then
-    // });
+    return DownloadManagerPlugin.enqueue(request);
+  }
+  
+  async query(ids: string[]): Promise<any> {
+    return DownloadManagerPlugin.query(ids);
   }
 }
 

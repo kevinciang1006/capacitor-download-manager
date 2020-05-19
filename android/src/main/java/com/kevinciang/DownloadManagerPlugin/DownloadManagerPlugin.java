@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 
 import com.getcapacitor.JSArray;
@@ -44,6 +45,10 @@ public class DownloadManagerPlugin extends Plugin {
 
     @PluginMethod()
     public void enqueue(PluginCall call) {
+        downloadManager = (DownloadManager) bridge.getActivity()
+                .getApplication()
+                .getApplicationContext()
+                .getSystemService(Context.DOWNLOAD_SERVICE);
 
         DownloadManager.Request req = new DownloadManager.Request((Uri.parse(call.getString("uri"))));
 
@@ -87,7 +92,75 @@ public class DownloadManagerPlugin extends Plugin {
         JSObject ret = new JSObject();
         ret.put("id", Long.toString(downloadId));
 
-        call.resolve(ret);
+        call.success(ret);
+    }
+
+    @PluginMethod()
+    public void query(PluginCall call) {
+        downloadManager = (DownloadManager) bridge.getActivity()
+                .getApplication()
+                .getApplicationContext()
+                .getSystemService(Context.DOWNLOAD_SERVICE);
+
+        DownloadManager.Query query = new DownloadManager.Query();
+
+        long[] ids = new long[0];
+        try {
+            ids = longsFromJSON(call.getArray("ids"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        query.setFilterById(ids);
+
+        if (call.getData().has("status")) {
+            query.setFilterByStatus(call.getInt("status"));
+        }
+
+        Cursor downloads = downloadManager.query(query);
+
+        JSObject ret = new JSObject();
+        ret.put("query", JSONFromCursor(downloads));
+        call.success(ret);
+
+        downloads.close();
+    }
+
+    private static long[] longsFromJSON(JSArray arr) throws JSONException {
+        if (arr == null) return null;
+
+        long[] longs = new long[arr.length()];
+
+        for (int i = 0; i < arr.length(); i++) {
+            String str = arr.getString(i);
+            longs[i] = Long.valueOf(str);
+        }
+
+        return longs;
+    }
+
+    private static JSArray JSONFromCursor(Cursor cursor) {
+        JSArray result = new JSArray();
+
+        cursor.moveToFirst();
+        do {
+            JSObject rowObject = new JSObject();
+            rowObject.put("id", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_ID)));
+            rowObject.put("title", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE)));
+            rowObject.put("description", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_DESCRIPTION)));
+            rowObject.put("mediaType", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE)));
+            rowObject.put("localFilename", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME)));
+            rowObject.put("localUri", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)));
+            rowObject.put("mediaproviderUri", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_MEDIAPROVIDER_URI)));
+            rowObject.put("uri", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI)));
+            rowObject.put("lastModifiedTimestamp", cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_LAST_MODIFIED_TIMESTAMP)));
+            rowObject.put("status", cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)));
+            rowObject.put("reason", cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON)));
+            rowObject.put("bytesDownloadedSoFar", cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)));
+            rowObject.put("totalSizeBytes", cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)));
+            result.put(rowObject);
+        } while (cursor.moveToNext());
+
+        return result;
     }
 
 //    protected DownloadManager.Request deserialiseRequest(JSONObject obj) throws JSONException {

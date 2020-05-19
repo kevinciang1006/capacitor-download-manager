@@ -25,12 +25,12 @@ export class DownloadManagerPluginWeb extends WebPlugin {
     enqueue(request) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('enqueue plugin: ', JSON.stringify(request));
-            // return request;
-            return new Promise(() => { });
-            // return DownloadManagerPlugin.enqueue(request);
-            // return new Promise((resolve, reject) => {
-            //   DownloadManagerPlugin.enqueue(request).then
-            // });
+            return DownloadManagerPlugin.enqueue(request);
+        });
+    }
+    query(ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return DownloadManagerPlugin.query(ids);
         });
     }
 }
