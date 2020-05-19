@@ -8,7 +8,23 @@ export class DownloadManager implements IDownloadManagerPlugin {
   enqueue(request: DownloadRequest): Promise<any> {
     return DownloadManagerPlugin.enqueue(request);
   }
-  query(ids: string[]): Promise<any> {
-    return DownloadManagerPlugin.query(ids);
+  query(ids: string[], progress?: Function): Promise<any> {
+    // return DownloadManagerPlugin.query(ids);
+    return new Promise(async (resolve, reject) => {
+      DownloadManagerPlugin.query(ids, (data: any, error: string) => {
+        if (!error) {
+          if (data['status'] != null) {
+            resolve(data);
+          } else {
+            progress(data);
+          }
+        } else {
+          reject({
+            status: 'error',
+            message: error
+          });
+        }
+      });
+    });
   }
 }

@@ -10,7 +10,7 @@ export interface IDownloadManagerPlugin {
         value: string;
     }>;
     enqueue(request: DownloadRequest): Promise<any>;
-    query(ids: string[]): Promise<any>;
+    query(ids: string[], progress?: Function): Promise<any>;
 }
 export declare enum NotificationVisibility {
     Visible = 0,

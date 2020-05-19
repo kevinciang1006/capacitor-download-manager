@@ -6,5 +6,5 @@ export declare class DownloadManager implements IDownloadManagerPlugin {
         value: string;
     }>;
     enqueue(request: DownloadRequest): Promise<any>;
-    query(ids: string[]): Promise<any>;
+    query(ids: string[], progress?: Function): Promise<any>;
 }
