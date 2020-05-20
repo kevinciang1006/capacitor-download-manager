@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="80ee04b2-3ffa-4478-9cd4-9b11f261268f" name="Default Changelist" comment="">
+    <list default="true" id="80ee04b2-3ffa-4478-9cd4-9b11f261268f" name="Default Changelist" comment="Fix invoke virtual method`">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kevinciang/DownloadManagerPlugin/DownloadManagerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kevinciang/DownloadManagerPlugin/DownloadManagerPlugin.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
