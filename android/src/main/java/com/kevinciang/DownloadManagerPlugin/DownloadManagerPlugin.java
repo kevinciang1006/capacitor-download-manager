@@ -241,25 +241,37 @@ public class DownloadManagerPlugin extends Plugin {
     }
 
     @PluginMethod()
-    public void remove(PluginCall call) {
+    public void removeDownload(PluginCall call) {
 
         Log.d(TAG, "remove in");
+
+        downloadManager = (DownloadManager)getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+
+        DownloadManager.Query query = new DownloadManager.Query();
 
         long[] ids = new long[0];
         try {
             ids = longsFromJSON(call.getArray("ids"));
         } catch (JSONException e) {
             e.printStackTrace();
-            call.reject("somethign wrong with the ids" + e.toString());
         }
+        query.setFilterById(ids);
 
-        Log.d(TAG, ids.toString());
+        Log.d(TAG, call.getArray("ids").toString());
 
-        int removed = downloadManager.remove(ids);
+        if (ids.length > 0) {
 
-        JSObject ret = new JSObject();
-        ret.put("removed_id", removed);
-        call.resolve(ret);
+            Cursor c = downloadManager.query(query);
+            while(c.moveToNext()) {
+                int removed = downloadManager.remove(ids);
+
+                JSObject ret = new JSObject();
+                ret.put("removed_id", removed);
+                call.resolve(ret);
+
+                c.close();
+            }
+        }
     }
 
     private String statusMessage(Cursor c) {

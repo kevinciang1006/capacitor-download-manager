@@ -37,8 +37,8 @@ export class DownloadManager {
             });
         }));
     }
-    remove(ids) {
-        return DownloadManagerPlugin.remove(ids);
+    removeDownload(ids) {
+        return DownloadManagerPlugin.removeDownload(ids);
     }
     addListener(eventName, listenerFunc) {
         let thisRef = this;
