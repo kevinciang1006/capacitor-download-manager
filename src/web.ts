@@ -23,7 +23,7 @@ export class DownloadManagerPluginWeb extends WebPlugin implements IDownloadMana
     return DownloadManagerPlugin.query(ids);
   }
 
-  addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any { }
+  // addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any { }
 }
 
 const DownloadManagerPlugin = new DownloadManagerPluginWeb();

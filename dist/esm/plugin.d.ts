@@ -1,3 +1,4 @@
+import { PluginListenerHandle } from '@capacitor/core';
 import { IDownloadManagerPlugin, DownloadRequest } from './definitions';
 export declare class DownloadManager implements IDownloadManagerPlugin {
     echo(options: {
@@ -7,4 +8,5 @@ export declare class DownloadManager implements IDownloadManagerPlugin {
     }>;
     enqueue(request: DownloadRequest): Promise<any>;
     query(ids: string[], progress?: Function): Promise<any>;
+    addListener(eventName: 'downloadEvent', listenerFunc: (downloadStatus: any) => void): PluginListenerHandle;
 }

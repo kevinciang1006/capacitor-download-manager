@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { WebPlugin } from '@capacitor/core';
-// declare var DM: Download
 export class DownloadManagerPluginWeb extends WebPlugin {
     constructor() {
         super({
