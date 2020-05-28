@@ -22,6 +22,9 @@ export class DownloadManagerPluginWeb extends WebPlugin implements IDownloadMana
   async query(ids: string[]): Promise<any> {
     return DownloadManagerPlugin.query(ids);
   }
+  async remove(ids: string[]): Promise<any> {
+    return DownloadManagerPlugin.query(ids);
+  }
 
   // addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any { }
 }

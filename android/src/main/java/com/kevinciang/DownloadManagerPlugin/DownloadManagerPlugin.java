@@ -9,8 +9,6 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-import android.webkit.DownloadListener;
-import android.widget.Toast;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -18,13 +16,11 @@ import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
-import com.getcapacitor.PluginResult;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @NativePlugin(
@@ -219,7 +215,7 @@ public class DownloadManagerPlugin extends Plugin {
                 String downloadIdString = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_ID));
                 int reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON));
 
-                Log.d(TAG, statusMessage(cursor));
+//                Log.d(TAG, statusMessage(cursor));
 
                 JSObject ret = new JSObject();
                 ret.put("download_id", downloadIdString);
@@ -242,6 +238,24 @@ public class DownloadManagerPlugin extends Plugin {
         ret.put("status", "download manager finished");
         call.resolve(ret);
 
+    }
+
+    @PluginMethod()
+    public void remove(PluginCall call) {
+
+        long[] ids = new long[0];
+        try {
+            ids = longsFromJSON(call.getArray("ids"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            call.reject("something wrong with ids");
+        }
+
+        int removed = downloadManager.remove(ids);
+
+        JSObject ret = new JSObject();
+        ret.put("removed_id", removed);
+        call.resolve(ret);
     }
 
     private String statusMessage(Cursor c) {

@@ -32,6 +32,11 @@ export class DownloadManagerPluginWeb extends WebPlugin {
             return DownloadManagerPlugin.query(ids);
         });
     }
+    remove(ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return DownloadManagerPlugin.query(ids);
+        });
+    }
 }
 const DownloadManagerPlugin = new DownloadManagerPluginWeb();
 export { DownloadManagerPlugin };

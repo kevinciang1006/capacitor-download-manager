@@ -37,6 +37,9 @@ export class DownloadManager {
             });
         }));
     }
+    remove(ids) {
+        return DownloadManagerPlugin.remove(ids);
+    }
     addListener(eventName, listenerFunc) {
         let thisRef = this;
         // let connection = window.navigator.connection || window.navigator.mozConnection || window.navigator.webkitConnection;

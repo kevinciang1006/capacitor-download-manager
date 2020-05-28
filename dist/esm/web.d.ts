@@ -9,6 +9,7 @@ export declare class DownloadManagerPluginWeb extends WebPlugin implements IDown
     }>;
     enqueue(request: DownloadRequest): Promise<any>;
     query(ids: string[]): Promise<any>;
+    remove(ids: string[]): Promise<any>;
 }
 declare const DownloadManagerPlugin: DownloadManagerPluginWeb;
 export { DownloadManagerPlugin };
