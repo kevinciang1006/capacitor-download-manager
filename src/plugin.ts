@@ -27,4 +27,5 @@ export class DownloadManager implements IDownloadManagerPlugin {
       });
     });
   }
+  addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any { }
 }

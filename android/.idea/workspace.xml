@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="80ee04b2-3ffa-4478-9cd4-9b11f261268f" name="Default Changelist" comment="Fix invoke virtual method`">
+    <list default="true" id="80ee04b2-3ffa-4478-9cd4-9b11f261268f" name="Default Changelist" comment="added callback in query method">
+      <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kevinciang/DownloadManagerPlugin/DownloadManagerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kevinciang/DownloadManagerPlugin/DownloadManagerPlugin.java" afterDir="false" />
@@ -79,7 +82,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589857046796</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="added callback in query method">
+      <created>1589948357406</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1589948357407</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -97,6 +107,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fix invoke virtual method" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix invoke virtual method" />
+    <MESSAGE value="added callback in query method" />
+    <option name="LAST_COMMIT_MESSAGE" value="added callback in query method" />
   </component>
 </project>

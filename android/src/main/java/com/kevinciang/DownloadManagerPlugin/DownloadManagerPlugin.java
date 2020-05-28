@@ -8,29 +8,29 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.DownloadListener;
 import android.widget.Toast;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
-import com.getcapacitor.Logger;
 import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
-//import com.getcapacitor.PluginResult;
-//
-//import org.json.JSONObject;
-//import org.json.JSONArray;
+import com.getcapacitor.PluginResult;
+
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @NativePlugin(
-    permissions={
-        Manifest.permission.INTERNET
-    }
+        permissions={
+                Manifest.permission.INTERNET
+        }
 )
 public class DownloadManagerPlugin extends Plugin {
 
@@ -41,6 +41,8 @@ public class DownloadManagerPlugin extends Plugin {
 
     public static final String PERMISSION_DENIED_ERROR = "PERMISSION DENIED";
 
+    public static final String DOWNLOAD_EVENT = "downloadEvent";
+
     private DownloadManager downloadManager;
     private BroadcastReceiver receiver;
 
@@ -48,6 +50,10 @@ public class DownloadManagerPlugin extends Plugin {
 //    private DownloadListener` `
 
     long downloadId = -1;
+    ArrayList<Long> downloadIds = new ArrayList<Long>();
+    boolean downloading = false;
+
+    private String TAG = "Cap";
 
     /**
      * Monitor for download status changes and fire our event.
@@ -55,10 +61,7 @@ public class DownloadManagerPlugin extends Plugin {
     @SuppressWarnings("MissingPermission")
     public void load() {
 
-        downloadManager = (DownloadManager) bridge.getActivity()
-                .getApplication()
-                .getApplicationContext()
-                .getSystemService(Context.DOWNLOAD_SERVICE);
+        downloadManager = (DownloadManager)getContext().getSystemService(Context.DOWNLOAD_SERVICE);
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -67,10 +70,31 @@ public class DownloadManagerPlugin extends Plugin {
                 long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
                 //Checking if the received broadcast is for our enqueued download by matching download id
                 if (downloadId == id) {
-                    Logger.debug("Download Completed");
-//                    notifyListeners(NETWRO);
-//                    Toast.makeText(getActivity(), "Download Completed", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onReceive: Download Completed = " + id);
+
+                    downloadManager = (DownloadManager)getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+                    DownloadManager.Query query = new DownloadManager.Query();
+                    query.setFilterById(downloadId);
+                    Cursor cursor = downloadManager.query(query);
+                    if (cursor != null && cursor.getCount() > 0) {
+                        cursor.moveToFirst();
+                        int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                        if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                            Log.d(TAG, "onReceive: Download sucessful = " + id + " status: " + status);
+                        } else {
+                            Log.d(TAG, "onReceive: Download assumed cancelled 1 = " + id + " status: " + status);
+                        }
+                    } else {
+                        JSObject ret = new JSObject();
+                        ret.put("download_id", id);
+                        ret.put("status", "cancelled");
+                        notifyListeners(DOWNLOAD_EVENT, ret);
+                        Log.d(TAG, "onReceive: Download assumed cancelled 2 = " + id);
+                    }
+
                 }
+                areAllDownloadsComplete(downloadIds);
+                Log.d(TAG, "onReceive: Still downloading? = " + downloading);
             }
         };
 
@@ -108,10 +132,7 @@ public class DownloadManagerPlugin extends Plugin {
     @PluginMethod()
     public void enqueue(PluginCall call) {
 
-        downloadManager = (DownloadManager) bridge.getActivity()
-                .getApplication()
-                .getApplicationContext()
-                .getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager downloadManager = (DownloadManager)getContext().getSystemService(Context.DOWNLOAD_SERVICE);
 
         DownloadManager.Request req = new DownloadManager.Request((Uri.parse(call.getString("uri"))));
 
@@ -151,10 +172,13 @@ public class DownloadManagerPlugin extends Plugin {
             }
         }
 
-        downloadId = downloadManager.enqueue(req);
+        this.downloadId = downloadManager.enqueue(req);
+        this.downloadIds.add(this.downloadId);
+
+        this.downloading = true;
 
         JSObject ret = new JSObject();
-        ret.put("id", Long.toString(downloadId));
+        ret.put("id", Long.toString(this.downloadId));
 
         call.success(ret);
     }
@@ -180,37 +204,43 @@ public class DownloadManagerPlugin extends Plugin {
             query.setFilterByStatus(call.getInt("status"));
         }
 
-        boolean downloading = true;
-
-        Logger.debug("trying to progress");
-        while (downloading) {
+        Log.d(TAG, "Trying to progress");
+        while (this.downloading) {
             Cursor cursor = downloadManager.query(query);
-            cursor.moveToFirst();
-            int bytes_downloaded = cursor.getInt(cursor
-                    .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-            int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+            if (cursor != null && cursor.getCount() > 0) {
 
-            if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
-                downloading = false;
+                cursor.moveToFirst();
+                int bytes_downloaded = cursor.getInt(cursor
+                        .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+
+                final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
+
+                String downloadIdString = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_ID));
+                int reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON));
+
+                Log.d(TAG, statusMessage(cursor));
+
+                JSObject ret = new JSObject();
+                ret.put("download_id", downloadIdString);
+                ret.put("bytes_downloaded", bytes_downloaded);
+                ret.put("bytes_total", bytes_total);
+                ret.put("dl_progress", dl_progress);
+                ret.put("status_message", statusMessage(cursor));
+                ret.put("status_code", cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)));
+                ret.put("reason", reason);
+                call.success(ret);
+
+                cursor.close();
+
+            } else {
+                call.reject("Download failed");
             }
-
-            final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
-
-            Logger.debug(statusMessage(cursor));
-
-            JSObject ret = new JSObject();
-            ret.put("bytes_downloaded", bytes_downloaded);
-            ret.put("bytes_total", bytes_total);
-            ret.put("dl_progress", dl_progress);
-            call.success(ret);
-
-            cursor.close();
         }
 
         JSObject ret = new JSObject();
-        ret.put("download", "finished");
+        ret.put("status", "download manager finished");
         call.resolve(ret);
-
 
     }
 
@@ -246,24 +276,30 @@ public class DownloadManagerPlugin extends Plugin {
         return (msg);
     }
 
-//    private BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            //Fetching the download id received with the broadcast
-//            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-//            //Checking if the received broadcast is for our enqueued download by matching download id
-//            if (downloadId == id) {
-////                Toast.makeText(MainActivity.this, "Download Completed", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    };
+    public void areAllDownloadsComplete(ArrayList<Long> dids) {
 
-    private void watchProgress(PluginCall call) {
-        watchingCalls.put(call.getCallbackId(), call);
-    }
+        downloadManager = (DownloadManager)getContext().getSystemService(Context.DOWNLOAD_SERVICE);
 
-    private void getProgress(final PluginCall call) {
+        DownloadManager.Query query = new DownloadManager.Query();
 
+        Log.d(TAG, "downloadIds: " + dids.toString());
+        for(int i = 0; i < dids.size(); i++) {
+
+            query.setFilterById(dids.get(i));
+
+            Cursor cursor = downloadManager.query(query);
+
+            if(cursor.moveToNext()) {
+
+                if(cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) != DownloadManager.STATUS_SUCCESSFUL) {
+
+                    this.downloading = true;
+                    return;
+                }
+            }
+        }
+
+        this.downloading = false;
     }
 
     private static long[] longsFromJSON(JSArray arr) throws JSONException {
@@ -288,11 +324,6 @@ public class DownloadManagerPlugin extends Plugin {
             rowObject.put("title", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE)));
             rowObject.put("description", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_DESCRIPTION)));
             rowObject.put("mediaType", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE)));
-//            rowObject.put("localFilename", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME)));
-//            rowObject.put("localUri", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)));
-//            rowObject.put("mediaproviderUri", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_MEDIAPROVIDER_URI)));
-//            rowObject.put("uri", cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI)));
-//            rowObject.put("lastModifiedTimestamp", cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_LAST_MODIFIED_TIMESTAMP)));
             rowObject.put("status", cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)));
             rowObject.put("reason", cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON)));
             rowObject.put("bytesDownloadedSoFar", cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)));
@@ -302,41 +333,4 @@ public class DownloadManagerPlugin extends Plugin {
 
         return result;
     }
-
-//    protected DownloadManager.Request deserialiseRequest(JSONObject obj) throws JSONException {
-//        DownloadManager.Request req = new DownloadManager.Request(Uri.parse(obj.getString("uri")));
-//
-//        req.setTitle(obj.optString("title"));
-//        req.setDescription(obj.optString("description"));
-//        req.setMimeType(obj.optString("mimeType", null));
-//
-//        if (obj.has("destinationInExternalFilesDir")) {
-//            Context context = bridge.getActivity()
-//                    .getApplication()
-//                    .getApplicationContext();
-//
-//            JSONObject params = obj.getJSONObject("destinationInExternalFilesDir");
-//            req.setDestinationInExternalFilesDir(context, params.optString("dirType"), params.optString("subPath"));
-//        }
-//        else if (obj.has("destinationInExternalPublicDir")) {
-//            JSONObject params = obj.getJSONObject("destinationInExternalPublicDir");
-//            req.setDestinationInExternalPublicDir(params.optString("dirType"), params.optString("subPath"));
-//        }
-//        else if (obj.has("destinationUri")) {
-//            req.setDestinationUri(Uri.parse(obj.getString("destinationUri")));
-//        }
-//
-//        req.setVisibleInDownloadsUi(obj.optBoolean("visibleInDownloadsUi", true));
-//        req.setNotificationVisibility(obj.optInt("notificationVisibility"));
-//
-//        if (obj.has("headers")) {
-//            JSONArray arrHeaders = obj.optJSONArray("headers");
-//            for (int i = 0; i < arrHeaders.length(); i++) {
-//                JSONObject headerObj = arrHeaders.getJSONObject(i);
-//                req.addRequestHeader(headerObj.optString("header"), headerObj.optString("value"));
-//            }
-//        }
-//
-//        return req;
-//    }
 }

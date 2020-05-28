@@ -1,8 +1,6 @@
 import { WebPlugin } from '@capacitor/core';
 import { IDownloadManagerPlugin, DownloadRequest } from './definitions';
 
-// declare var DM: Download
-
 export class DownloadManagerPluginWeb extends WebPlugin implements IDownloadManagerPlugin {
   constructor() {
     super({
@@ -24,6 +22,8 @@ export class DownloadManagerPluginWeb extends WebPlugin implements IDownloadMana
   async query(ids: string[]): Promise<any> {
     return DownloadManagerPlugin.query(ids);
   }
+
+  addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any { }
 }
 
 const DownloadManagerPlugin = new DownloadManagerPluginWeb();
