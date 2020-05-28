@@ -243,9 +243,19 @@ public class DownloadManagerPlugin extends Plugin {
     @PluginMethod()
     public void remove(PluginCall call) {
 
-        long id = call.getInt("id");
+        Log.d(TAG, "remove in");
 
-        int removed = downloadManager.remove(id);
+        long[] ids = new long[0];
+        try {
+            ids = longsFromJSON(call.getArray("ids"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            call.reject("somethign wrong with the ids" + e.toString());
+        }
+
+        Log.d(TAG, ids.toString());
+
+        int removed = downloadManager.remove(ids);
 
         JSObject ret = new JSObject();
         ret.put("removed_id", removed);

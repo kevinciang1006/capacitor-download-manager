@@ -8,6 +8,6 @@ export declare class DownloadManager implements IDownloadManagerPlugin {
     }>;
     enqueue(request: DownloadRequest): Promise<any>;
     query(ids: string[], progress?: Function): Promise<any>;
-    remove(id: string): Promise<any>;
+    remove(ids: string[]): Promise<any>;
     addListener(eventName: 'downloadEvent', listenerFunc: (downloadStatus: any) => void): PluginListenerHandle;
 }
