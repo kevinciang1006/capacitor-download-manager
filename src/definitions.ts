@@ -8,7 +8,7 @@ export interface IDownloadManagerPlugin {
   echo(options: { value: string }): Promise<{value: string}>;
   enqueue(request: DownloadRequest): Promise<any>;
   query(ids: string[], progress?: Function): Promise<any>;
-  remove(ids: string[]): Promise<any>;
+  remove(id: string): Promise<any>;
   addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any;
 }
 
