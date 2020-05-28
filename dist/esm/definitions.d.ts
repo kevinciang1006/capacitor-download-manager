@@ -11,7 +11,7 @@ export interface IDownloadManagerPlugin {
     }>;
     enqueue(request: DownloadRequest): Promise<any>;
     query(ids: string[], progress?: Function): Promise<any>;
-    removeDownload(ids: string[]): Promise<any>;
+    removeDownload(ids: string[]): void;
     addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any;
 }
 export declare enum NotificationVisibility {

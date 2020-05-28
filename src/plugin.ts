@@ -33,8 +33,8 @@ export class DownloadManager implements IDownloadManagerPlugin {
       });
     });
   }
-  removeDownload(ids: string[]): Promise<any> {
-    return DownloadManagerPlugin.removeDownload(ids);
+  removeDownload(ids: string[]): void {
+    DownloadManagerPlugin.removeDownload(ids);
   }
   addListener(eventName: 'downloadEvent', listenerFunc: (downloadStatus: any) => void): PluginListenerHandle {
     let thisRef = this;
