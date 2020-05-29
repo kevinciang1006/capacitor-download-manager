@@ -27,13 +27,15 @@ export class DownloadManagerPluginWeb extends WebPlugin {
             return DownloadManagerPlugin.enqueue(request);
         });
     }
-    query(id) {
+    query(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DownloadManagerPlugin.query(id);
+            return DownloadManagerPlugin.query(options);
         });
     }
-    removeDownload(ids) {
-        DownloadManagerPlugin.removeDownload(ids);
+    remove(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return DownloadManagerPlugin.remove(options);
+        });
     }
 }
 const DownloadManagerPlugin = new DownloadManagerPluginWeb();

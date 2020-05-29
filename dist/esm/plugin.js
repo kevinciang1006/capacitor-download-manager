@@ -16,10 +16,10 @@ export class DownloadManager {
     enqueue(request) {
         return DownloadManagerPlugin.enqueue(request);
     }
-    query(id, progress) {
+    query(options, progress) {
         // return DownloadManagerPlugin.query(ids);
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            DownloadManagerPlugin.query(id, (data, error) => {
+            DownloadManagerPlugin.query(options, (data, error) => {
                 if (!error) {
                     if (data['status'] != null) {
                         resolve(data);
@@ -37,8 +37,8 @@ export class DownloadManager {
             });
         }));
     }
-    removeDownload(ids) {
-        DownloadManagerPlugin.removeDownload(ids);
+    remove(options) {
+        return DownloadManagerPlugin.remove(options);
     }
     addListener(eventName, listenerFunc) {
         let thisRef = this;

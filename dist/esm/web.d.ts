@@ -1,5 +1,5 @@
 import { WebPlugin } from '@capacitor/core';
-import { IDownloadManagerPlugin, DownloadRequest } from './definitions';
+import { IDownloadManagerPlugin, DownloadRequest, Options } from './definitions';
 export declare class DownloadManagerPluginWeb extends WebPlugin implements IDownloadManagerPlugin {
     constructor();
     echo(options: {
@@ -8,8 +8,8 @@ export declare class DownloadManagerPluginWeb extends WebPlugin implements IDown
         value: string;
     }>;
     enqueue(request: DownloadRequest): Promise<any>;
-    query(id: string): Promise<any>;
-    removeDownload(ids: string[]): void;
+    query(options: Options): Promise<any>;
+    remove(options: Options): Promise<any>;
 }
 declare const DownloadManagerPlugin: DownloadManagerPluginWeb;
 export { DownloadManagerPlugin };

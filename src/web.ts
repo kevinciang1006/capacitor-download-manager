@@ -1,5 +1,5 @@
 import { WebPlugin } from '@capacitor/core';
-import { IDownloadManagerPlugin, DownloadRequest } from './definitions';
+import { IDownloadManagerPlugin, DownloadRequest, Options } from './definitions';
 
 export class DownloadManagerPluginWeb extends WebPlugin implements IDownloadManagerPlugin {
   constructor() {
@@ -19,11 +19,11 @@ export class DownloadManagerPluginWeb extends WebPlugin implements IDownloadMana
     return DownloadManagerPlugin.enqueue(request);
   }
   
-  async query(id: string): Promise<any> {
-    return DownloadManagerPlugin.query(id);
+  async query(options: Options): Promise<any> {
+    return DownloadManagerPlugin.query(options);
   }
-  removeDownload(ids: string[]): void {
-    DownloadManagerPlugin.removeDownload(ids);
+  async remove(options: Options): Promise<any> {
+    return DownloadManagerPlugin.remove(options);
   }
 
   // addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any { }

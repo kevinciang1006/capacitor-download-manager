@@ -89,9 +89,11 @@ public class DownloadManagerPlugin extends Plugin {
     private boolean isDownloadSuccess;
     class MyThread extends Thread {
 
+        private String downloadId;
         private DownloadData downloadData;
 
-        public MyThread(DownloadData downloadData) {
+        public MyThread(String downloadId, DownloadData downloadData) {
+            this.downloadId = downloadId;
             this.downloadData = downloadData;
         }
 
@@ -131,36 +133,37 @@ public class DownloadManagerPlugin extends Plugin {
 
                 // start iterating and noting progress ..
                 c = downloadManager.query(q);
-                if(c != null) {
+                if(c != null && c.moveToFirst()) {
                     int filesDownloaded = 0;
                     float fileFracs = 0f; // this stores the fraction of all the files in
                     // download
-                    final int columnTotalSize = c.getColumnIndex
-                            (DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
+//                    final int columnTotalSize = c.getColumnIndex
+//                            (DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
                     final int columnStatus = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
                     final int columnId = c.getColumnIndex(DownloadManager.COLUMN_ID);
-                    final int columnDwnldSoFar = c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                    int bytes_downloaded = c.getInt(c
+                            .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                    int bytes_total = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
                     final int reason = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_REASON));
+                    final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
 
-                    while (c.moveToNext()) {
-                        // checking the progress ..
-                        if(c.getInt(columnStatus) == DownloadManager.STATUS_SUCCESSFUL) {
-                            filesDownloaded++;
-                        }
-                        // If the file is partially downloaded, take its fraction ..
-                        else if(c.getInt(columnTotalSize) > 0) {
-                            fileFracs += ((c.getInt(columnDwnldSoFar) * 1.0f) /
-                                    c.getInt(columnTotalSize));
-                        } else if(c.getInt(columnStatus) == DownloadManager.STATUS_FAILED) {
-                            // TODO - Take appropriate action. Error in downloading one of the
-                            // files.
-
-                            Log.d(TAG, "error download: " + columnId);
-                            return;
-                        }
-                    }
-
-                    c.close();
+//                    do {
+//                        // checking the progress ..
+//                        if(c.getInt(columnStatus) == DownloadManager.STATUS_SUCCESSFUL) {
+//                            filesDownloaded++;
+//                        }
+//                        // If the file is partially downloaded, take its fraction ..
+//                        else if(c.getInt(columnTotalSize) > 0) {
+//                            fileFracs += ((c.getInt(columnDwnldSoFar) * 1.0f) /
+//                                    c.getInt(columnTotalSize));
+//                        } else if(c.getInt(columnStatus) == DownloadManager.STATUS_FAILED) {
+//                            // TODO - Take appropriate action. Error in downloading one of the
+//                            // files.
+//
+//                            Log.d(TAG, "error download: " + columnId);
+//                            return;
+//                        }
+//                    }   while (c.moveToNext());
 
                     // calculate the progress to show ...
                     float progress = (filesDownloaded + fileFracs)/ids.length;
@@ -172,15 +175,17 @@ public class DownloadManagerPlugin extends Plugin {
 
                     // Show the progress appropriately ...
                     JSObject ret = new JSObject();
-                    ret.put("download_id", columnId);
-                    ret.put("columnTotalSize", columnTotalSize);
-                    ret.put("columnStatus", columnStatus);
-                    ret.put("dl_progress", percentage);
+                    ret.put("download_id", downloadId);
+                    ret.put("bytes_downloaded", bytes_downloaded);
+                    ret.put("bytes_total", bytes_total);
+                    ret.put("dl_progress", dl_progress);
                     ret.put("status_message", statusMessage(c));
                     ret.put("status_code", c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS)));
                     ret.put("reason", reason);
-                    downloadData.getCallback().success();
-                    Log.d(TAG, txt);
+                    downloadData.getCallback().success(ret);
+                    Log.d(TAG, ret.toString());
+
+                    c.close();
                 }
             }
         }
@@ -374,7 +379,7 @@ public class DownloadManagerPlugin extends Plugin {
         data.setCallback(call);
 
         // starting the thread to track the progress of the download ..
-        new MyThread(data).start();
+        new MyThread(downloadDataId, data).start();
 //        mProgressThread = new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -448,7 +453,7 @@ public class DownloadManagerPlugin extends Plugin {
     }
 
     @PluginMethod()
-    public void removeDownload(PluginCall call) {
+    public void remove(PluginCall call) {
 
         Log.d(TAG, "remove in");
 
@@ -456,17 +461,17 @@ public class DownloadManagerPlugin extends Plugin {
 
 //        DownloadManager.Query query = new DownloadManager.Query();
 
-        long[] ids = new long[0];
-        try {
-            ids = longsFromJSON(call.getArray("ids"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        long[] ids = new long[0];
+//        try {
+//            ids = longsFromJSON(call.getString("id"));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 //        query.setFilterById(ids);
 
-        Log.d(TAG, call.getArray("ids").toString());
-
-        int removed = downloadManager.remove(ids);
+//        Log.d(TAG, call.getArray("ids").toString());
+        String id = call.getString("id");
+        int removed = downloadManager.remove(Long.parseLong(id));
 
         JSObject ret = new JSObject();
         ret.put("removed_id", removed);
