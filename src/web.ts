@@ -19,8 +19,8 @@ export class DownloadManagerPluginWeb extends WebPlugin implements IDownloadMana
     return DownloadManagerPlugin.enqueue(request);
   }
   
-  async query(ids: string[]): Promise<any> {
-    return DownloadManagerPlugin.query(ids);
+  async query(id: string): Promise<any> {
+    return DownloadManagerPlugin.query(id);
   }
   removeDownload(ids: string[]): void {
     DownloadManagerPlugin.removeDownload(ids);

@@ -16,10 +16,10 @@ export class DownloadManager {
     enqueue(request) {
         return DownloadManagerPlugin.enqueue(request);
     }
-    query(ids, progress) {
+    query(id, progress) {
         // return DownloadManagerPlugin.query(ids);
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            DownloadManagerPlugin.query(ids, (data, error) => {
+            DownloadManagerPlugin.query(id, (data, error) => {
                 if (!error) {
                     if (data['status'] != null) {
                         resolve(data);

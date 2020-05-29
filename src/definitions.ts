@@ -7,7 +7,7 @@ declare module "@capacitor/core" {
 export interface IDownloadManagerPlugin {
   echo(options: { value: string }): Promise<{value: string}>;
   enqueue(request: DownloadRequest): Promise<any>;
-  query(ids: string[], progress?: Function): Promise<any>;
+  query(id: string, progress?: Function): Promise<any>;
   removeDownload(ids: string[]): void;
   addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any;
 }

@@ -27,9 +27,9 @@ export class DownloadManagerPluginWeb extends WebPlugin {
             return DownloadManagerPlugin.enqueue(request);
         });
     }
-    query(ids) {
+    query(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DownloadManagerPlugin.query(ids);
+            return DownloadManagerPlugin.query(id);
         });
     }
     removeDownload(ids) {
