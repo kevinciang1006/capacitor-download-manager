@@ -9,7 +9,7 @@ export interface IDownloadManagerPlugin {
   enqueue(request: DownloadRequest): Promise<any>;
   query(options: Options, progress?: Function): Promise<any>;
   remove(options: Options): Promise<any>;
-  addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any;
+  // addListener(eventName: 'downloadEvent', listenerFunc: (status: any) => void): any;
 }
 
 export interface Options {

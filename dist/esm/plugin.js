@@ -40,22 +40,5 @@ export class DownloadManager {
     remove(options) {
         return DownloadManagerPlugin.remove(options);
     }
-    addListener(eventName, listenerFunc) {
-        let thisRef = this;
-        // let connection = window.navigator.connection || window.navigator.mozConnection || window.navigator.webkitConnection;
-        // let connectionType = connection ? (connection.type || connection.effectiveType) : 'wifi';
-        let downloadBindFunc = listenerFunc.bind(thisRef, { download_id: 'test', status: 'test' });
-        // let offlineBindFunc = listenerFunc.bind(thisRef, { connected: false, connectionType: 'none' });
-        if (eventName.localeCompare('downloadEvent') === 0) {
-            window.addEventListener('download', downloadBindFunc);
-            // window.addEventListener('offline', offlineBindFunc);
-            return {
-                remove: () => {
-                    window.removeEventListener('download', downloadBindFunc);
-                    // window.removeEventListener('offline', offlineBindFunc);
-                }
-            };
-        }
-    }
 }
 //# sourceMappingURL=plugin.js.map

@@ -1,12 +1,6 @@
-import { Plugins, PluginListenerHandle } from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 import { IDownloadManagerPlugin, DownloadRequest, Options } from './definitions';
 const { DownloadManagerPlugin } = Plugins;
-
-// export interface PluginListenerHandle {
-//   remove: () => void;
-// }
-
-declare var window: any;
 export class DownloadManager implements IDownloadManagerPlugin {
   echo(options: { value: string }): Promise<{ value: string }> {
     return DownloadManagerPlugin.echo(options);
@@ -36,23 +30,23 @@ export class DownloadManager implements IDownloadManagerPlugin {
   remove(options: Options): Promise<any> {
     return DownloadManagerPlugin.remove(options);
   }
-  addListener(eventName: 'downloadEvent', listenerFunc: (downloadStatus: any) => void): PluginListenerHandle {
-    let thisRef = this;
-    // let connection = window.navigator.connection || window.navigator.mozConnection || window.navigator.webkitConnection;
-    // let connectionType = connection ? (connection.type || connection.effectiveType) : 'wifi';
+  // addListener(eventName: 'downloadEvent', listenerFunc: (downloadStatus: any) => void): PluginListenerHandle {
+  //   let thisRef = this;
+  //   // let connection = window.navigator.connection || window.navigator.mozConnection || window.navigator.webkitConnection;
+  //   // let connectionType = connection ? (connection.type || connection.effectiveType) : 'wifi';
 
-    let downloadBindFunc = listenerFunc.bind(thisRef, { download_id: 'test', status: 'test' });
-    // let offlineBindFunc = listenerFunc.bind(thisRef, { connected: false, connectionType: 'none' });
+  //   let downloadBindFunc = listenerFunc.bind(thisRef, { download_id: 'test', status: 'test' });
+  //   // let offlineBindFunc = listenerFunc.bind(thisRef, { connected: false, connectionType: 'none' });
 
-    if (eventName.localeCompare('downloadEvent') === 0) {
-      window.addEventListener('download', downloadBindFunc);
-      // window.addEventListener('offline', offlineBindFunc);
-      return {
-        remove: () => {
-          window.removeEventListener('download', downloadBindFunc);
-          // window.removeEventListener('offline', offlineBindFunc);
-        }
-      };
-    }
-  }
+  //   if (eventName.localeCompare('downloadEvent') === 0) {
+  //     window.addEventListener('download', downloadBindFunc);
+  //     // window.addEventListener('offline', offlineBindFunc);
+  //     return {
+  //       remove: () => {
+  //         window.removeEventListener('download', downloadBindFunc);
+  //         // window.removeEventListener('offline', offlineBindFunc);
+  //       }
+  //     };
+  //   }
+  // }
 }
